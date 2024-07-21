@@ -81,7 +81,7 @@ class ViewMessagePage extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "From :",
+                  "To :",
                   style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 20,
@@ -102,7 +102,7 @@ class ViewMessagePage extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "From :",
+                  "To :",
                   style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 20,

@@ -2,9 +2,12 @@ import 'package:collab_app/pages/dashboard.dart';
 import 'package:collab_app/pages/sign_up.dart';
 import 'package:collab_app/widgets/form_label_widget.dart';
 import 'package:collab_app/widgets/title_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../helpers/constants.dart';
 import '../helpers/widget_helper.dart';
@@ -19,6 +22,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
+  Map<String,dynamic>? _userData;
 
   void _continue() {
     if(_formKey.currentState!.validate()) {
@@ -199,7 +203,9 @@ class _LoginPageState extends State<LoginPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 InkWell(
-                                  onTap: () {},
+                                  onTap: () {
+                                    signInWithGoogle();
+                                  },
                                   child: Container(
                                     height: 60,
                                     width: 150,
@@ -292,5 +298,42 @@ class _LoginPageState extends State<LoginPage> {
             ),
       ),
     );
+  }
+
+  signInWithGoogle() async {
+    GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+    AuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+   UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+
+   print(userCredential.user?.displayName);
+   print(userCredential.user?.email);
+   print(userCredential.user?.phoneNumber);
+
+  }
+
+  Future<UserCredential> signInFacebook() async {
+
+    final LoginResult loginResult = await FacebookAuth.instance.login(permissions: ['email','public profile']);
+
+    if(loginResult == LoginStatus.success) {
+      final userData = await FacebookAuth.instance.getUserData();
+      
+      _userData = userData;
+    } else {
+      print(loginResult.message);
+    }
+
+    print(_userData!['email']);
+
+
+    final OAuthCredential oAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.tokenString);
+
+    return FirebaseAuth.instance.signInWithCredential(oAuthCredential);
   }
 }

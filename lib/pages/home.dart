@@ -23,8 +23,10 @@ class _HomePageState extends State<HomePage> {
           children: [
             ListTile(
               leading: CircleAvatar(
+                backgroundImage: AssetImage(
+                  "assets/images/person.png",
+                ),
                 radius: 30,
-                child: Image.asset("assets/images/person.png",height: 40,width: 40,),
               ),
               title:  Text(
                 "Hi, Bruce",
@@ -196,8 +198,6 @@ class _HomePageState extends State<HomePage> {
                 }
               },
             )
-
-
           ],
         ),
       ),

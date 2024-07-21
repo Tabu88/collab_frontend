@@ -66,25 +66,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            InkWell(
-              onTap: () {
-                Get.back();
-              },
-              child: Card(
-                elevation: 3.0,
-                child: Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                      color: Color(Constants.primaryWhite()),
-                      borderRadius: BorderRadius.circular(10)
-                    ),
-                    child: Icon(Icons.close,color: Color(Constants.primaryBlack()),)),
-              ),
-            ),
             const SizedBox(height: 20,),
             Text(
-              "Create New Tasks",
+              "Create New Task",
               style: TextStyle(
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
@@ -187,7 +171,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
               ],
             ),
             const SizedBox(height: 20,),
-            //Date Time widget
             Text(
               "Task Deadline",
               style: TextStyle(
@@ -197,7 +180,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
               ),
             ),
             Container(
-              height: 150,
+              height: 110,
               width: double.infinity,
               child: ListView.builder(
                 itemCount: currentMonthList.length,
@@ -209,7 +192,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     return capsuleView(index);
                   }),
             ),
-            const SizedBox(height: 30,),
+            const SizedBox(height: 20,),
             Text(
                 "Category",
                 style: TextStyle(
@@ -427,35 +410,13 @@ class _AddTaskPageState extends State<AddTaskPage> {
           });
         },
         child: Container(
-          height: 140,
+          height: 100,
           width: 60,
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: (currentMonthList[index].day != currentDateTime.day)
-                  ? [
-                    Colors.white.withOpacity(0.8),
-                    Colors.white.withOpacity(0.7),
-                    Colors.white.withOpacity(0.6)
-                    ]
-                  : [
-                      HexColor("ED6184"),
-                      HexColor("EF315B"),
-                      HexColor("E2042D"),
-                    ],
-              begin: const FractionalOffset(0.0, 0.0),
-              end: const FractionalOffset(0.0, 0.1),
-              stops: const [0.0, 0.5, 1.0],
-              tileMode: TileMode.clamp
-            ),
+            color: (currentMonthList[index].day != currentDateTime.day)
+                ? Color(Constants.primaryLightGrey())
+                : Color(Constants.primaryTeal()) ,
             borderRadius: BorderRadius.circular(40),
-            boxShadow: const [
-              BoxShadow(
-                blurRadius: 4,
-                color: Colors.black12,
-                offset: Offset(4, 4),
-                spreadRadius: 2
-              )
-            ]
           ),
           child: Center(
             child: Column(
@@ -464,10 +425,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 Text(
                   currentMonthList[index].day.toString(),
                   style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
                     color: (currentMonthList[index].day != currentDateTime.day)
-                        ?  HexColor("465876")
+                        ?  Color(Constants.primaryGrey())
                         : Colors.white
                   ),
                 ),
@@ -475,9 +436,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   date_util.DateUtils.weekdays[currentMonthList[index].weekday -1],
                   style: TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                     color: (currentMonthList[index].day != currentDateTime.day)
-                        ? HexColor("465876")
+                        ? Color(Constants.primaryGrey())
                         : Colors.white
                   ),
                 )
