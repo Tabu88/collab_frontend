@@ -286,8 +286,6 @@ class _LoginPageState extends State<LoginPage> {
                             )
 
 
-
-
                           ],
                         ),
                       ),
@@ -309,12 +307,21 @@ class _LoginPageState extends State<LoginPage> {
       idToken: googleAuth?.idToken,
     );
 
-   UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+   // UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+    try {
+      final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      print(userCredential.user?.displayName);
+      print(userCredential.user?.email);
+      print(userCredential.user?.phoneNumber);
 
-   print(userCredential.user?.displayName);
-   print(userCredential.user?.email);
-   print(userCredential.user?.phoneNumber);
+      Get.to(const Dashboard());
 
+    } on FirebaseAuthException catch (e) {
+      print('Error: $e');
+
+    } catch(ex) {
+      print('Error: $ex');
+    }
   }
 
   Future<UserCredential> signInFacebook() async {

@@ -1,12 +1,16 @@
 import 'package:collab_app/pages/login.dart';
 import 'package:collab_app/widgets/form_label_widget.dart';
 import 'package:collab_app/widgets/title_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../helpers/constants.dart';
 import '../helpers/widget_helper.dart';
+import 'dashboard.dart';
 
 
 class SignUpPage extends StatefulWidget {
@@ -20,6 +24,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
+  Map<String,dynamic>? _userData;
 
   void _continue() {
     if(_formKey.currentState!.validate()) {
@@ -335,9 +340,6 @@ class _SignUpPageState extends State<SignUpPage> {
                           )
                       )
 
-
-
-
                     ],
                   ),
                 ),
@@ -349,4 +351,59 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
+
+
+
+  signInWithGoogle() async {
+    GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+    AuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+
+    try {
+      final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      print(userCredential.user?.displayName);
+      print(userCredential.user?.email);
+      print(userCredential.user?.phoneNumber);
+
+      Get.to(const LoginPage());
+
+    } on FirebaseAuthException catch (e) {
+      print('Error: $e');
+
+    } catch(ex) {
+      print('Error: $ex');
+    }
+  }
+
+  Future<void> signInFacebook() async {
+
+    final LoginResult loginResult = await FacebookAuth.instance.login(permissions: ['email','public profile']);
+
+    if(loginResult == LoginStatus.success) {
+      final userData = await FacebookAuth.instance.getUserData();
+
+      _userData = userData;
+    } else {
+      print(loginResult.message);
+    }
+
+    print(_userData!['email']);
+
+
+    final OAuthCredential oAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.tokenString);
+    final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(oAuthCredential);
+
+    print (userCredential.user?.email);
+    print (userCredential.user?.displayName);
+    print (userCredential.user?.phoneNumber);
+
+
+
+  }
+
 }
